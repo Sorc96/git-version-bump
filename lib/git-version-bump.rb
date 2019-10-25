@@ -247,7 +247,7 @@ module GitVersionBump
 	end
 
 	def self.on_master?
-		`git branch | grep \* | cut -d ' ' -f2` == 'master'
+		`git branch`.lines.find { |l| l.start_with? '*' }[1..-1].strip == 'master'
 	end
 
 	def self.caller_file
