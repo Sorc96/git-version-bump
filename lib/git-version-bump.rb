@@ -118,6 +118,10 @@ module GitVersionBump
 	end
 
 	def self.tag_version(v, release_notes = false)
+		unless on_master?
+			puts 'You are not on the master branch. Refusing to tag.'
+			return
+		end
 		if dirty_tree?
 			puts "You have uncommitted files.  Refusing to tag a dirty tree."
 		else
@@ -240,6 +244,10 @@ module GitVersionBump
 		system("! git diff --no-ext-diff --quiet --exit-code 2> #{DEVNULL} || ! git diff-index --cached --quiet HEAD 2> #{DEVNULL}")
 
 		$? == 0
+	end
+
+	def self.on_master?
+		`git branch | grep \* | cut -d ' ' -f2` == 'master'
 	end
 
 	def self.caller_file
